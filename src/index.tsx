@@ -3,6 +3,11 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import Sample from './Sample.worker';
+
+const myWorkerInstance: Worker = new Sample();
+console.log('[App] MyWorker instance:', myWorkerInstance);
+myWorkerInstance.postMessage('This is a message from the main thread!');
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
