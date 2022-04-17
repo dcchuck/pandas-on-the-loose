@@ -2,6 +2,7 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Sample from './Sample.worker';
+import { AddFriendForm, FriendList } from './DexiePoc';
 const pyodideWorker = new Sample();
 
 const callbacks = {};
@@ -78,6 +79,8 @@ function App() {
           Learn React
         </a>
       </header>
+      <AddFriendForm defaultAge={79} />
+      <FriendList />
     </div>
   );
 }

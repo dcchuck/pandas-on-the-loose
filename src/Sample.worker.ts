@@ -1,17 +1,7 @@
 declare const self: DedicatedWorkerGlobalScope;
 export default {} as typeof Worker & { new (): Worker };
 
-// Your code ...
-console.log('[MyWorker] Running.');
-
-self.addEventListener('message', (event: MessageEvent): void => {
-  console.log('[MyWorker] Incoming message from main thread:', event.data);
-});
-// webworker.js
-
-// Setup your project to serve `py-worker.js`. You should also serve
-// `pyodide.js`, and all its associated `.asm.js`, `.data`, `.json`,
-// and `.wasm` files as well:
+// TODO - import from a locally running CDN
 importScripts("https://cdn.jsdelivr.net/pyodide/v0.20.0/full/pyodide.js");
 
 async function loadPyodideAndPackages() {
