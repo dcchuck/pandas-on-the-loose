@@ -2,6 +2,7 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Sample from './Sample.worker';
+import { db } from './db';
 const pyodideWorker = new Sample();
 
 const callbacks = {};
@@ -62,22 +63,28 @@ async function main() {
 
 function App() {
   React.useEffect(() => { main() }, [])
+  const [message, setMessage] = React.useState('')
+
+  // validating unique constraint
+  const addDate = async () => {
+    try {
+      const id = await db.stockObservation.add({
+        symbol: 'CPD',
+        adjustedClose: '99',
+        date: new Date(2020, 10, 1)
+      })
+
+      setMessage(`Created: ${id}`)
+    } catch (e) {
+      setMessage(`Problem!: $${e}`);
+    }
+
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <button onClick={addDate}>ADD</button>
+      <h1>{message}</h1>
     </div>
   );
 }

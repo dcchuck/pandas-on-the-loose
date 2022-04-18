@@ -16,7 +16,7 @@ export class MySubClassedDexie extends Dexie {
   constructor() {
     super('PandaWatch');
     this.version(1).stores({
-      adjustedClose: '++id, date, symbol, adjustedClose'
+      stockObservation: '++id, date, symbol, adjustedClose, &[date+symbol]'
     });
   }
 }
