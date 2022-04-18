@@ -3,9 +3,11 @@ import logo from './logo.svg';
 import './App.css';
 import Sample from './Sample.worker';
 import { db } from './db';
+import Seeder from './Seeder';
 const pyodideWorker = new Sample();
 
 const callbacks = {};
+
 
 pyodideWorker.onmessage = (event) => {
   const { id, ...data } = event.data;
@@ -70,7 +72,7 @@ function App() {
     try {
       const id = await db.stockObservation.add({
         symbol: 'CPD',
-        adjustedClose: '99',
+        adjustedClose: 99,
         date: new Date(2020, 10, 1)
       })
 
@@ -85,6 +87,7 @@ function App() {
     <div>
       <button onClick={addDate}>ADD</button>
       <h1>{message}</h1>
+      <Seeder />
     </div>
   );
 }

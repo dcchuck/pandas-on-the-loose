@@ -5,7 +5,7 @@ export interface StockObservation {
     id?: number;
     date: Date;
     symbol: string;
-    adjustedClose: string;          // Save it as as string;
+    adjustedClose: number;          // Save it as as string;
 }
 
 export class MySubClassedDexie extends Dexie {
