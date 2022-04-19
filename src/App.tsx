@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import Sample from './Sample.worker';
 import { db } from './db';
@@ -67,7 +66,7 @@ type RecordCountArray = [string,number][]
 
 function App() {
   React.useEffect(() => { main() }, [])
-  const [symbols, setSymbols] = React.useState<string[]>(['aapl', 'amzn', 'fb', 'goog', 'msft'])
+  const [symbols] = React.useState<string[]>(['aapl', 'amzn', 'fb', 'goog', 'msft'])
   const [recordCount, setRecordCount] = React.useState<RecordCountArray>([])
 
   const init = React.useCallback(async () => {
@@ -79,11 +78,11 @@ function App() {
     }
     setRecordCount(newRecordCounts)
 
-  },[setRecordCount])
+  },[setRecordCount, symbols])
 
   React.useEffect(() => {
     init();
-  },[setRecordCount])
+  },[setRecordCount, init])
 
   return (
     <div>
