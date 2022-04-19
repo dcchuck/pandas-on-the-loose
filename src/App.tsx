@@ -63,30 +63,31 @@ async function main() {
   }
 }
 
+type RecordCountArray = [string,number][]
+
 function App() {
   React.useEffect(() => { main() }, [])
-  const [message, setMessage] = React.useState('')
+  const [symbols, setSymbols] = React.useState<string[]>(['aapl', 'amzn', 'fb', 'goog', 'msft'])
+  const [recordCount, setRecordCount] = React.useState<RecordCountArray>([])
 
-  // validating unique constraint
-  const addDate = async () => {
-    try {
-      const id = await db.stockObservation.add({
-        symbol: 'CPD',
-        adjustedClose: 99,
-        date: new Date(2020, 10, 1)
-      })
-
-      setMessage(`Created: ${id}`)
-    } catch (e) {
-      setMessage(`Problem!: $${e}`);
+  const init = React.useCallback(async () => {
+    const newRecordCounts: RecordCountArray = []
+    for (let i = 0; i < symbols.length; i++) {
+      const symbol = symbols[i]
+      const recordCount = await db.stockObservation.where({ symbol }).count()
+      newRecordCounts.push([symbol, recordCount])
     }
+    setRecordCount(newRecordCounts)
 
-  }
+  },[setRecordCount])
+
+  React.useEffect(() => {
+    init();
+  },[setRecordCount])
 
   return (
     <div>
-      <button onClick={addDate}>ADD</button>
-      <h1>{message}</h1>
+      <h1>{JSON.stringify(recordCount)}</h1>
       <Seeder />
     </div>
   );
