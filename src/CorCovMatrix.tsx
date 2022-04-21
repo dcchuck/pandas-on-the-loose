@@ -45,8 +45,6 @@ export const CorCovMatrix: React.FC<{ matrixDefinition: MatrixDefinition }> = ({
     const gridRef = useRef<AgGridReact>(null);
     const [rowData, setRowData] = useState<ICorrelationMatrixRow[]>([]);
     const [columnDefs, setColumnDefs] = useState<{ field: string }[]>([]);
-    // TODO update text or do something with initialized; causes ref weirdness & column issues in first attempts
-    const [initialized, setInitialized] = useState(false);
 
     // TODO this any
     const onWorkerMessage = useCallback((event: any) => {
@@ -65,8 +63,7 @@ export const CorCovMatrix: React.FC<{ matrixDefinition: MatrixDefinition }> = ({
 
         setRowData(newRowData as unknown as ICorrelationMatrixRow[]);
         setColumnDefs(symbolArray.map(field => ({ field })));
-        setInitialized(true)
-    },[setRowData, gridRef])
+    },[setRowData])
 
     useEffect(() => {
         if (gridRef.current && gridRef.current.api) {
@@ -82,7 +79,7 @@ export const CorCovMatrix: React.FC<{ matrixDefinition: MatrixDefinition }> = ({
 
     useEffect(() => {
         sendRunMessage(matrixDefinition);
-    },[])
+    },[matrixDefinition])
 
 
     return(
