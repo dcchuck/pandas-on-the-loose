@@ -3,6 +3,7 @@ import { AgGridReact } from "ag-grid-react";
 import { db } from "./db";
 import PyodideWorker from "./Pyodide.worker";
 import { correlationMatrix as correlationMatrixPython } from "./python-scripts/correlation-matrix";
+import { Nav } from "./Nav";
 const worker = new PyodideWorker();
 
 const sendRunMessage = async () => {
@@ -72,6 +73,7 @@ export const CorrelationMatrix = () => {
                     columnDefs={columnDefs}
                 />
             </div>
+            <Nav />
         </div>
     )
 }

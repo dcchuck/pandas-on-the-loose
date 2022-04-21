@@ -1,9 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { CorrelationMatrix } from './CorrelationMatrix';
+import Seeder from './Seeder';
+import './index.css';
 import 'ag-grid-community/dist/styles/ag-grid.css'; // Core grid CSS, always needed
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css'; // Optional theme CSS
 
@@ -12,7 +14,13 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<App />} />
+        <Route path="/correlation-matrix" element={<CorrelationMatrix />} />
+        <Route path="/seeder" element={<Seeder />} />
+      </Routes>
+    </BrowserRouter>
   </React.StrictMode>
 );
 

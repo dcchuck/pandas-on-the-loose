@@ -1,8 +1,7 @@
 import React from 'react';
 import './App.css';
 import { db } from './db';
-import Seeder from './Seeder';
-import { CorrelationMatrix } from './CorrelationMatrix';
+import { Nav } from './Nav';
 
 type RecordCountArray = [string,number][]
 
@@ -27,9 +26,9 @@ function App() {
 
   return (
     <div>
-      <h1>{JSON.stringify(recordCount)}</h1>
-      <Seeder />
-      <CorrelationMatrix />
+      <h1>Records</h1>
+      <div>{JSON.stringify(recordCount)}</div>
+      <Nav />
     </div>
   );
 }

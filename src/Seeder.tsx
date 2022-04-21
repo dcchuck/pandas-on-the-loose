@@ -6,6 +6,7 @@ import { goog } from './data-seed/goog';
 import { msft } from './data-seed/msft';
 import { sp500 } from './data-seed/sp500';
 import { db } from './db';
+import { Nav } from './Nav';
 
 interface Seed {
     [index: string]: number;
@@ -37,7 +38,7 @@ const seedAll = async () => {
                 console.log(e);
             }
         }
-        
+
         console.log('\n\n\n\n');
         console.log(`Completed seeding; ${SYMBOLS[i]}`);
         console.log('\n\n\n\n');
@@ -56,11 +57,12 @@ const clearTable = async () => {
 const Seeder = () => {
     return (
         <div>
-        <h1>
-            Data Seeder
-        </h1>
-        <button onClick={seedAll}>Seed All</button>
-        <button onClick={clearTable}>Clear All</button>
+            <h1>
+                Data Seeder
+            </h1>
+            <button onClick={seedAll}>Seed All</button>
+            <button onClick={clearTable}>Clear All</button>
+            <Nav />
         </div>
     )
 }
