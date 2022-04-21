@@ -9,7 +9,9 @@ import json
 import datetime
 import numpy as np
 import pandas as pd
-from js import allRecords # allRecords is added to the global context by us
+# allRecords: records to translate from Worker space to DataFrame
+# matrixDefinition: which matrix to return, Correlation or Covariance
+from js import allRecords, matrixDefinition 
 
 def read_price_data(stock_symbol):
     """
@@ -87,5 +89,12 @@ for stock1_symbol in symbol_list:
 correlation_matrix = correlation_matrix.astype(float).round(5)
 
 # Translate the final values to two lists - one of column headers, the other a list of lists of row
-json.dumps([list(correlation_matrix.columns), correlation_matrix.values.tolist()])
-`;
+response = None
+if matrixDefinition == 'Correlation':
+    response = json.dumps([list(correlation_matrix.columns), correlation_matrix.values.tolist()])
+
+if matrixDefinition == 'Covariance':
+    response = json.dumps([list(covariance_matrix.columns), covariance_matrix.values.tolist()])
+
+response
+`

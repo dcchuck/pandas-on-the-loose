@@ -16,6 +16,7 @@ self.onmessage = async (event) => {
   await pyodideReadyPromise;
   // Don't bother yet with this line, suppose our API is built in such a way:
   const { id, python, ...context } = event.data;
+  console.log('CONTEXT', context)
   // The worker copies the context in its own "memory" (an object mapping name to values)
   for (const key of Object.keys(context)) {
     // @ts-ignore

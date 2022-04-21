@@ -3,25 +3,28 @@ import { AgGridReact } from "ag-grid-react";
 import { db } from "./db";
 import PyodideWorker from "./Pyodide.worker";
 import { correlationMatrix as correlationMatrixPython } from "./python-scripts/correlation-matrix";
-import { Nav } from "./Nav";
+import styled from 'styled-components';
 const worker = new PyodideWorker();
 
-const sendRunMessage = async () => {
+export enum MatrixDefinition {
+    Correlation = 'Correlation',
+    Covariance = 'Covariance'
+}
+
+const sendRunMessage = async (matrixDefinition: MatrixDefinition) => {
     const allRecords = await db.stockObservation.toArray();
 
     worker.postMessage({
         id: Math.floor(Math.random() * 100000), // TODO do i need this?
         allRecords,
-        context: { allRecords },
+        matrixDefinition,
         python: correlationMatrixPython,
     })
 };
 
 
-const WIDTH = 800;
+const WIDTH = 500;
 const HEIGHT = 300;
-// symbol_list = ["AAPL", "AMZN", "FB", "GOOG", "MSFT"] #,"CAT", "NKE", "DAL","XOM"
-const defaultColumnDefs = [{ field: 'AAPL', width: 160 }, { field: "AMZN", width: 160 }, { field: "FB", width: 160 }, { field: "GOOG", width: 160 }, { field: "MSFT", width: 160 } ]
 
 interface ICorrelationMatrixRow {
     AAPL: number;
@@ -31,14 +34,24 @@ interface ICorrelationMatrixRow {
     MSFT: number;
 }
 
-export const CorrelationMatrix = () => {
+const MatrixWrapper = styled.div`
+`
+
+const MatrixHeadline = styled.h1`
+    margin: 0;
+`
+
+export const CorCovMatrix: React.FC<{ matrixDefinition: MatrixDefinition }> = ({ matrixDefinition }) => {
     const gridRef = useRef<AgGridReact>(null);
     const [rowData, setRowData] = useState<ICorrelationMatrixRow[]>([]);
-    const [columnDefs] = useState(defaultColumnDefs);
+    const [columnDefs, setColumnDefs] = useState<{ field: string }[]>([]);
+    // TODO update text or do something with initialized; causes ref weirdness & column issues in first attempts
+    const [initialized, setInitialized] = useState(false);
 
     // TODO this any
     const onWorkerMessage = useCallback((event: any) => {
         const { id, ...data } = event.data;
+        console.log(event.data)
         const [symbolArray, rowsArray]: [string[], number[][]] = JSON.parse(data.results);
 
         const newRowData = rowsArray.map((valueArr: number[]) => {
@@ -50,10 +63,16 @@ export const CorrelationMatrix = () => {
             return result;
         })
 
-        console.log('Setting Row Data', newRowData)
         setRowData(newRowData as unknown as ICorrelationMatrixRow[]);
-        gridRef.current?.api.sizeColumnsToFit();
-    },[setRowData])
+        setColumnDefs(symbolArray.map(field => ({ field })));
+        setInitialized(true)
+    },[setRowData, gridRef])
+
+    useEffect(() => {
+        if (gridRef.current && gridRef.current.api) {
+            gridRef.current?.api.sizeColumnsToFit();
+        }
+    }, [gridRef, columnDefs])
 
     useEffect(() => {
         worker.onmessage = onWorkerMessage;
@@ -61,19 +80,21 @@ export const CorrelationMatrix = () => {
         return worker.removeEventListener('message', onWorkerMessage);
     },[onWorkerMessage])
 
+    useEffect(() => {
+        sendRunMessage(matrixDefinition);
+    },[])
+
 
     return(
-        <div>
-            <h1>Correlation Matrix</h1>
-            <button onClick={sendRunMessage}>RUN</button>
-            <div className="ag-theme-alpine" style={{width: WIDTH, height: HEIGHT}}>
+        <MatrixWrapper>
+            <MatrixHeadline>{matrixDefinition} Matrix</MatrixHeadline>
+            <div className="ag-theme-alpine-dark" style={{width: WIDTH, height: HEIGHT}}>
                 <AgGridReact
                     ref={gridRef}
                     rowData={rowData}
                     columnDefs={columnDefs}
                 />
             </div>
-            <Nav />
-        </div>
+        </MatrixWrapper>
     )
 }

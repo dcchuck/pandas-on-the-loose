@@ -1,5 +1,7 @@
 """
 Credit https://github.com/woutervanheeswijk/portfolio_variance/blob/main/portfolio_covariance.ipynb
+
+Using this analysis as the basis for my first components
 """
 import datetime
 import numpy as np
@@ -11,13 +13,8 @@ import seaborn as sns
 def read_price_data(stock_symbol, start_date, end_date):
     """Read daily price data using Pandas Datareader"""
     stock_data = web.DataReader(stock_symbol, "yahoo", start_date, end_date) # Read stock data 
-    print(stock_data)
     prices = stock_data.loc[:, "Adj Close"] # Store adjusted close prices 
-    # dtype='datetime64[ns]', name='Date', length=252, freq=None)
-    # import code; code.interact(local=dict(globals(), **locals()))
-    print(prices)
     prices = prices.fillna(method="ffill") # Forward fill missing data points
-    print(prices)
 
     return prices
 
@@ -78,6 +75,7 @@ for stock1_symbol in symbol_list:
 correlation_matrix = correlation_matrix.astype(float).round(5)
 
 print(correlation_matrix)
+print(covariance_matrix)
 
 ax = sns.heatmap(correlation_matrix, vmin=-1, vmax=1)
 

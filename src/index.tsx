@@ -3,11 +3,11 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { CorrelationMatrix } from './CorrelationMatrix';
+import { CorCovMatrix, MatrixDefinition } from './CorCovMatrix';
 import Seeder from './Seeder';
 import './index.css';
 import 'ag-grid-community/dist/styles/ag-grid.css'; // Core grid CSS, always needed
-import 'ag-grid-community/dist/styles/ag-theme-alpine.css'; // Optional theme CSS
+import 'ag-grid-community/dist/styles/ag-theme-alpine-dark.css'; // Optional theme CSS
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -17,7 +17,8 @@ root.render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/correlation-matrix" element={<CorrelationMatrix />} />
+        <Route path="/correlation-matrix" element={<CorCovMatrix matrixDefinition={MatrixDefinition.Correlation} />} />
+        <Route path="/covariance-matrix" element={<CorCovMatrix matrixDefinition={MatrixDefinition.Covariance} />} />
         <Route path="/seeder" element={<Seeder />} />
       </Routes>
     </BrowserRouter>
