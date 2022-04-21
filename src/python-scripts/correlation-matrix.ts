@@ -9,33 +9,23 @@ import json
 import datetime
 import numpy as np
 import pandas as pd
-# import pandas_datareader as web
-# import matplotlib.pyplot as plt
-# import seaborn as sns
-# This assumes we have a global for each of these in the js context
-# in this case we will always pass in "datas"
-from js import allRecords
+from js import allRecords # allRecords is added to the global context by us
 
-def read_price_data(stock_symbol, start_date, end_date):
+def read_price_data(stock_symbol):
     """
-    TODO this code is brutal
+    creates dataframe from the global js context via allRecords
     """
     rows = []
     for recc in allRecords:
-        row_dict = {
-            "Adjusted Close": recc.adjustedClose,
-            "Date": datetime.datetime(recc.date.getFullYear(), recc.date.getMonth() + 1, recc.date.getDate()),
-            "Symbol": recc.symbol,
-        }
         if recc.symbol == stock_symbol.lower():
+            row_dict = {
+                "Adjusted Close": recc.adjustedClose,
+                "Date": datetime.datetime(recc.date.getFullYear(), recc.date.getMonth() + 1, recc.date.getDate()),
+                "Symbol": recc.symbol,
+            }
             rows.append(row_dict)
 
-    # These need to have a date index of format YYYY-MM-DD
-    # Date
-    # 2019-01-02    1539.130005
-    # 2019-01-03    1500.280029
-    # 2019-01-04    1575.390015
-    # thats the target dataframe
+    # This is translation matches what is required by the script
     df = pd.DataFrame(rows)
     df = df.set_index("Date")
     df = df.loc[:, "Adjusted Close"] # Store adjusted close prices 
@@ -52,14 +42,12 @@ def generate_return_series(prices):
     return returns
 
 """Set input"""
-start_date = datetime.datetime(2019, 1, 1)
-end_date = datetime.datetime(2020, 1, 1)
 symbol_list = ["AAPL", "AMZN", "FB", "GOOG", "MSFT"] #,"CAT", "NKE", "DAL","XOM"
 
 num_stocks= len(symbol_list)
 stock_weights = {stock_symbol:1/num_stocks for stock_symbol in symbol_list} # Set stock weights
 
-price_series_sp500 = read_price_data("SP500", start_date, end_date) # Read price data
+price_series_sp500 = read_price_data("SP500") # Read price data
 return_series_sp500 = generate_return_series(price_series_sp500) # Compute return data
 
 no_business_days = len(return_series_sp500)
@@ -67,7 +55,7 @@ daily_returns = pd.DataFrame(index=symbol_list, columns=np.arange(no_business_da
 
 """Read price data and compute daily returns"""
 for stock_symbol in symbol_list:   
-    price_series = read_price_data(stock_symbol, start_date, end_date) # Read price data
+    price_series = read_price_data(stock_symbol) # Read price data
     return_series = generate_return_series(price_series) # Compute return data
     daily_returns.loc[stock_symbol] = return_series # Store return series in DataFrame
         
@@ -98,15 +86,6 @@ for stock1_symbol in symbol_list:
 # Round correlation coefficients
 correlation_matrix = correlation_matrix.astype(float).round(5)
 
-print(correlation_matrix)
-"hello from me"
-print(correlation_matrix.values.tolist())
-'success'
-as_list = correlation_matrix.values.tolist()
-json.dumps(as_list)
-json.dumps(correlation_matrix.to_json())
-correlation_matrix.to_json()
+# Translate the final values to two lists - one of column headers, the other a list of lists of row
 json.dumps([list(correlation_matrix.columns), correlation_matrix.values.tolist()])
-
-# we want to return this value from the request
 `;
