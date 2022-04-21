@@ -5,6 +5,9 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import Sample from './Sample.worker';
 
+import 'ag-grid-community/dist/styles/ag-grid.css'; // Core grid CSS, always needed
+import 'ag-grid-community/dist/styles/ag-theme-alpine.css'; // Optional theme CSS
+
 const myWorkerInstance: Worker = new Sample();
 console.log('[App] MyWorker instance:', myWorkerInstance);
 myWorkerInstance.postMessage('This is a message from the main thread!');

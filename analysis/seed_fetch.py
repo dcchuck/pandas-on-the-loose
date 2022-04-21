@@ -12,7 +12,10 @@ def get_filename(stock_symbol):
     """
     path helper
     """
-    return f"./src/data-seed/{stock_symbol.lower()}.ts"
+    if stock_symbol == "^GSPC":
+        return f"./src/data-seed/sp500.ts"
+    else:
+        return f"./src/data-seed/{stock_symbol.lower()}.ts"
 
 def create_seed_json_file(stock_symbol):
     """
@@ -24,7 +27,17 @@ def create_seed_json_file(stock_symbol):
 
     prices.to_json(get_filename(stock_symbol))
 
-symbol_list = ["AAPL", "AMZN", "FB", "GOOG", "MSFT"] #,"CAT", "NKE", "DAL","XOM"
+symbol_list = ["^GSPC", "AAPL", "AMZN", "FB", "GOOG", "MSFT"] #,"CAT", "NKE", "DAL","XOM"
+
+def get_ts_text(stock_symbol):
+    """
+    translating the sp500 name again
+    """
+    if (stock_symbol == "^GSPC"):
+        return f"export const sp500 = "
+    else :
+        return f"export const {stock_symbol.lower()} = "
+
 
 def add_necessary_typescript_code(stock_symol):
     """
@@ -36,7 +49,7 @@ def add_necessary_typescript_code(stock_symol):
     with open(get_filename(stock_symol), 'r+') as f:
         content = f.read()
         f.seek(0, 0)
-        ts_text = f"export const {stock_symol.lower()} = "
+        ts_text = get_ts_text(stock_symol)
         f.write(ts_text + '\n' + content)
 
 for symbol in symbol_list:

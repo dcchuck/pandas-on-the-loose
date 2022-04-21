@@ -1,25 +1,46 @@
+// See step_1_for_browser.py for styled code
+// TODO - autogen this file
+export const correlationMatrix = `
 """
+In this version, I comment out the fetch logic to include the approach outlined by Pyodide (context)
 Credit https://github.com/woutervanheeswijk/portfolio_variance/blob/main/portfolio_covariance.ipynb
 """
+import json
 import datetime
 import numpy as np
 import pandas as pd
-import pandas_datareader as web
-import matplotlib.pyplot as plt
-import seaborn as sns
+# import pandas_datareader as web
+# import matplotlib.pyplot as plt
+# import seaborn as sns
+# This assumes we have a global for each of these in the js context
+# in this case we will always pass in "datas"
+from js import allRecords
 
 def read_price_data(stock_symbol, start_date, end_date):
-    """Read daily price data using Pandas Datareader"""
-    stock_data = web.DataReader(stock_symbol, "yahoo", start_date, end_date) # Read stock data 
-    print(stock_data)
-    prices = stock_data.loc[:, "Adj Close"] # Store adjusted close prices 
-    # dtype='datetime64[ns]', name='Date', length=252, freq=None)
-    # import code; code.interact(local=dict(globals(), **locals()))
-    print(prices)
-    prices = prices.fillna(method="ffill") # Forward fill missing data points
-    print(prices)
+    """
+    TODO this code is brutal
+    """
+    rows = []
+    for recc in allRecords:
+        row_dict = {
+            "Adjusted Close": recc.adjustedClose,
+            "Date": datetime.datetime(recc.date.getFullYear(), recc.date.getMonth() + 1, recc.date.getDate()),
+            "Symbol": recc.symbol,
+        }
+        if recc.symbol == stock_symbol.lower():
+            rows.append(row_dict)
 
-    return prices
+    # These need to have a date index of format YYYY-MM-DD
+    # Date
+    # 2019-01-02    1539.130005
+    # 2019-01-03    1500.280029
+    # 2019-01-04    1575.390015
+    # thats the target dataframe
+    df = pd.DataFrame(rows)
+    df = df.set_index("Date")
+    df = df.loc[:, "Adjusted Close"] # Store adjusted close prices 
+    df = df.fillna(method="ffill") # Forward fill missing data points
+    return df
 
 def generate_return_series(prices):
     """Compute daily return series for given price series"""
@@ -38,7 +59,7 @@ symbol_list = ["AAPL", "AMZN", "FB", "GOOG", "MSFT"] #,"CAT", "NKE", "DAL","XOM"
 num_stocks= len(symbol_list)
 stock_weights = {stock_symbol:1/num_stocks for stock_symbol in symbol_list} # Set stock weights
 
-price_series_sp500 = read_price_data("^GSPC", start_date, end_date) # Read price data
+price_series_sp500 = read_price_data("SP500", start_date, end_date) # Read price data
 return_series_sp500 = generate_return_series(price_series_sp500) # Compute return data
 
 no_business_days = len(return_series_sp500)
@@ -78,41 +99,14 @@ for stock1_symbol in symbol_list:
 correlation_matrix = correlation_matrix.astype(float).round(5)
 
 print(correlation_matrix)
+"hello from me"
+print(correlation_matrix.values.tolist())
+'success'
+as_list = correlation_matrix.values.tolist()
+json.dumps(as_list)
+json.dumps(correlation_matrix.to_json())
+correlation_matrix.to_json()
+json.dumps([list(correlation_matrix.columns), correlation_matrix.values.tolist()])
 
-ax = sns.heatmap(correlation_matrix, vmin=-1, vmax=1)
-
-portfolio_mean = 0
-portfolio_variance = 0
-
-"""Compute mean portfolio return"""
-for stock_symbol in symbol_list:
-    
-    # Retrieve return series as arrays
-    stock_returns = daily_returns.loc[stock_symbol].values.astype(float)
-    
-    weight_stock = stock_weights.get(stock_symbol)
-
-    mean_return = stock_returns.mean()
-    portfolio_mean += mean_return *weight_stock
-
-"""Compute variance portfolio return"""
-for stock1_symbol in symbol_list:
-    for stock2_symbol in symbol_list:
-        weight_stock1 = stock_weights.get(stock1_symbol)
-        weight_stock2 = stock_weights.get(stock2_symbol)
-        covariance= covariance_matrix.loc[stock1_symbol,stock2_symbol]    
-        portfolio_variance += weight_stock1*weight_stock2*covariance
-
-# Compute annualized mean and volatility portfolio
-ann_portfolio_mean = portfolio_mean*252
-ann_portfolio_volatility = np.sqrt(252)*np.sqrt(portfolio_variance)
-
-print('Annualized mean return:',"{0:.2%}".format(ann_portfolio_mean))
-print('Annualized portfolio volatility:',"{0:.2%}".format(ann_portfolio_volatility))
-
-# Compute annualized mean and volatility S&P 500
-ann_sp500_mean = np.mean(return_series_sp500) *252
-ann_SP500_volatility = np.sqrt(252) * np.std(return_series_sp500)
-
-print('Annualized SP500 return:',"{0:.2%}".format(ann_sp500_mean))
-print('Annualized SP500 volatility:',"{0:.2%}".format(ann_SP500_volatility))
+# we want to return this value from the request
+`;

@@ -7,9 +7,8 @@ importScripts("https://cdn.jsdelivr.net/pyodide/v0.20.0/full/pyodide.js");
 async function loadPyodideAndPackages() {
   // @ts-ignore
   self.pyodide = await loadPyodide();
-  // @ts-ignore
-  // await self.pyodide.loadPackage(["numpy", "pytz"]);
 }
+
 let pyodideReadyPromise = loadPyodideAndPackages();
 
 self.onmessage = async (event) => {
