@@ -4,6 +4,7 @@ Gets the necessary files for seeding IndexDB
 import pandas as pd
 import pandas_datareader as web
 import datetime
+import os
 
 start_date = datetime.datetime(2015, 1, 1)
 end_date = datetime.datetime(2022, 1, 1)
@@ -21,6 +22,13 @@ def get_filename(stock_symbol):
         return f"./src/data-seed/sp500.ts"
     else:
         return f"./src/data-seed/{stock_symbol.lower()}.ts"
+
+def seed_exists(stock_symbol):
+    """
+    Check if the seed file exists for a given symbol
+    """
+    filename = get_filename(stock_symbol)
+    return os.path.isfile(filename)
 
 def create_seed_json_file(stock_symbol):
     """
@@ -67,6 +75,13 @@ no_data_count = 0
 key_error_count = 0
 # for symbol in nasdaq["Symbol"]:
 for symbol in symbol_list:
+    if seed_exists(symbol):
+        print(f"Skipping {symbol}")
+        if symbol == "^GSPC":
+            index_lines.append("export * from './sp500';")
+        else:
+            index_lines.append(f"export * from './{symbol.lower()}';")
+        continue
     print(f"Fetching {symbol}")
     try:
         if symbol == "^GSPC" or symbol.isalpha():
