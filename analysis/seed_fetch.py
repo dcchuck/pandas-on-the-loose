@@ -65,10 +65,10 @@ def add_necessary_typescript_code(stock_symol):
         f.write(ts_text + '\n' + content)
 
 # symbol_list = ["^GSPC", "AAPL", "AMZN", "FB", "GOOG", "MSFT"] #,"CAT", "NKE", "DAL","XOM"
-# symbol_list = ["^GSPC", "AAPL", "AMZN", "FB", "GOOG", "MSFT","CAT", "NKE", "DAL","XOM"]
+symbol_list = ["^GSPC", "AAPL", "AMZN", "FB", "GOOG", "MSFT","CAT", "NKE", "DAL","XOM", "IBM", "GME", "AMD", "T", "DPZ", "GPS"]
 # redefine symbol list
 index_lines = []
-symbol_list = pd.read_csv("./analysis/nasdaq.csv")["Symbol"]
+# symbol_list = pd.read_csv("./analysis/nasdaq.csv")["Symbol"]
 
 not_enough_observations_count = 0
 no_data_count = 0
@@ -96,6 +96,7 @@ for symbol in symbol_list:
     except NotEnoughObservations:
         not_enough_observations_count += 1
     except web._utils.RemoteDataError:
+        print("Remote Data Error", symbol)
         no_data_count += 1
     except KeyError:
         key_error_count += 1

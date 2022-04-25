@@ -2,11 +2,12 @@ import React from 'react';
 import './App.css';
 import { db } from './db';
 import { Nav } from './Nav';
+import * as allRecords from './data-seed'
 
 type RecordCountArray = [string,number][]
 
 function App() {
-  const [symbols] = React.useState<string[]>(['aapl', 'amzn', 'fb', 'goog', 'msft', 'sp500'])
+  const [symbols] = React.useState<string[]>(Object.keys(allRecords))
   const [recordCount, setRecordCount] = React.useState<RecordCountArray>([])
 
   const init = React.useCallback(async () => {

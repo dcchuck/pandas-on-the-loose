@@ -1,32 +1,18 @@
-import React from 'react';
-import { aapl } from './data-seed/aapl';
-import { amzn } from './data-seed/amzn';
-import { fb } from './data-seed/fb';
-import { goog } from './data-seed/goog';
-import { msft } from './data-seed/msft';
-import { sp500 } from './data-seed/sp500';
+import React, { useState } from 'react';
 import { db } from './db';
 import { Nav } from './Nav';
+import * as allSymbols from './data-seed';
 
-interface Seed {
-    [index: string]: number;
-}
+const SYMBOLS = Object.keys(allSymbols)
 
-const SYMBOLS = ['aapl', 'amzn', 'fb', 'goog', 'msft', 'sp500']
-const SEEDS = [aapl as Seed, amzn as Seed, fb as Seed, goog as Seed, msft as Seed, sp500 as Seed]
-
-// TODO fancy equals
-if (SYMBOLS.length !== SEEDS.length) {
-    throw Error('Out of Sync SYMBOLS and SEEDS')
-}
-
-const seedAll = async () => {
+const seedAll = async (onComplete: () => void) => {
     for (let i = 0; i < SYMBOLS.length; i++) {
-        const data = Object.keys(SEEDS[i]).map(millisecondTimesampString => {
+        const seed = (allSymbols as unknown as any)[SYMBOLS[i]]
+        const data = Object.keys(seed).map(millisecondTimesampString => {
             return {
                 symbol: SYMBOLS[i],
                 date: new Date(parseInt(millisecondTimesampString)),
-                adjustedClose: SEEDS[i][millisecondTimesampString],
+                adjustedClose: seed[millisecondTimesampString],
             }
         })
 
@@ -55,13 +41,27 @@ const clearTable = async () => {
 
 // stateful + progress tracker
 const Seeder = () => {
+    const [seeding, setSeeding] = useState(false);
+
+    const seedAllClickHandler = () => {
+        if (!seeding) {
+            setSeeding(true)
+            seedAll(() => setSeeding(false));
+        }
+    }
+
     return (
         <div>
             <h1>
                 Data Seeder
             </h1>
-            <button onClick={seedAll}>Seed All</button>
-            <button onClick={clearTable}>Clear All</button>
+            <h2>{seeding ? 'Seeding In Progress...' : null }</h2>
+            <div>
+                <button onClick={seedAllClickHandler} disabled={seeding}>Seed All</button>
+            </div>
+            <div>
+                <button onClick={clearTable} disabled={seeding}>Clear All</button>
+            </div>
             <Nav />
         </div>
     )
