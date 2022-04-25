@@ -8,6 +8,7 @@ import Seeder from './Seeder';
 import './index.css';
 import 'ag-grid-community/dist/styles/ag-grid.css'; // Core grid CSS, always needed
 import 'ag-grid-community/dist/styles/ag-theme-alpine-dark.css'; // Optional theme CSS
+import { PortfoioVsSp } from './PortfolioVsSp';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -19,6 +20,7 @@ root.render(
         <Route path="/" element={<App />} />
         <Route path="/correlation-matrix" element={<CorCovMatrix matrixDefinition={MatrixDefinition.Correlation} />} />
         <Route path="/covariance-matrix" element={<CorCovMatrix matrixDefinition={MatrixDefinition.Covariance} />} />
+        <Route path="/portfolio-vs-sp" element={<PortfoioVsSp />} />
         <Route path="/seeder" element={<Seeder />} />
       </Routes>
     </BrowserRouter>

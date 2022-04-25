@@ -9,5 +9,7 @@ export const Nav = () =>
         <div />
         <Link to="/covariance-matrix">Covariance Matrix</Link>
         <div />
+        <Link to="/portfolio-vs-sp">Portfolio vs SP</Link>
+        <div />
         <Link to="/seeder">Seeder</Link>
     </div>
