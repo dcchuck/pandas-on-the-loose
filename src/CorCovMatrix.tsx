@@ -1,8 +1,17 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { AgGridReact } from "ag-grid-react";
+import React, { useCallback, useEffect, useState } from "react";
 import PyodideWorker from "./Pyodide.worker";
 import { correlationMatrix as correlationMatrixPython } from "./python-scripts/correlation-matrix";
 import { PortfolioSelect } from "./PortfolioSelect";
+import Table from '@mui/material/Table';
+import Button from '@mui/material/Button';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import { Typography } from "@mui/material";
+
 const worker = new PyodideWorker();
 
 export enum MatrixDefinition {
@@ -18,24 +27,42 @@ const sendRunMessage = async (matrixDefinition: MatrixDefinition, portfolio: str
     })
 };
 
-
-const WIDTH = 500;
-const HEIGHT = 300;
-
-interface ICorrelationMatrixRow {
-    AAPL: number;
-    AMZN: number;
-    FB: number;
-    GOOG: number;
-    MSFT: number;
+interface MatrixTableProps {
+    rows: number[][];
+    columns: string[];
 }
 
-const Loader = () => <span>Hello World</span>
+const MatrixTable: React.FC<MatrixTableProps> = ({ rows, columns }) => {
+  return (
+    <TableContainer component={Paper}>
+      <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+        <TableHead>
+          <TableRow>
+            {
+                columns.map(columnString => <TableCell>{columnString}</TableCell>)
+            }
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.map((rowNumbersArray, index) => (
+            <TableRow
+              key={`rowTableRow-${index}`}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+              {
+                  rowNumbersArray.map(numberValue => <TableCell>{numberValue}</TableCell>)
+              }
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+}
 
 export const CorCovMatrix: React.FC<{ matrixDefinition: MatrixDefinition }> = ({ matrixDefinition }) => {
-    const gridRef = useRef<AgGridReact>(null);
-    const [rowData, setRowData] = useState<ICorrelationMatrixRow[]>([]);
-    const [columnDefs, setColumnDefs] = useState<{ field: string }[]>([]);
+    const [rowData, setRowData] = useState<number[][]>([]);
+    const [columnDefs, setColumnDefs] = useState<string[]>([]);
     const [portfolio, setPortfolio] = React.useState<string[]>([]);
 
     // TODO this any
@@ -43,24 +70,9 @@ export const CorCovMatrix: React.FC<{ matrixDefinition: MatrixDefinition }> = ({
         const { results } = event.data;
         const [symbolArray, rowsArray]: [string[], number[][]] = JSON.parse(results);
 
-        const newRowData = rowsArray.map((valueArr: number[]) => {
-            const result: Record<string, unknown> = {};
-            for (let i = 0; i < valueArr.length; i++) {
-                result[symbolArray[i]] = valueArr[i];
-            }
-
-            return result;
-        })
-
-        setRowData(newRowData as unknown as ICorrelationMatrixRow[]);
-        setColumnDefs(symbolArray.map(field => ({ field })));
+        setRowData(rowsArray);
+        setColumnDefs(symbolArray)
     }, [setRowData])
-
-    useEffect(() => {
-        if (gridRef.current && gridRef.current.api) {
-            gridRef.current?.api.sizeColumnsToFit();
-        }
-    }, [gridRef, columnDefs])
 
     useEffect(() => {
         worker.onmessage = onWorkerMessage;
@@ -68,28 +80,17 @@ export const CorCovMatrix: React.FC<{ matrixDefinition: MatrixDefinition }> = ({
         return worker.removeEventListener('message', onWorkerMessage);
     }, [onWorkerMessage])
 
-    // useEffect(() => {
-    //     sendRunMessage(matrixDefinition);
-    // }, [matrixDefinition])
-
     const submitPortfolio = useCallback(() => {
         sendRunMessage(matrixDefinition, portfolio)
     }, [matrixDefinition, portfolio]);
 
 
     return (
-        <div>
-            <h1>{matrixDefinition} Matrix</h1>
+        <Paper>
+            <Typography variant="h5">{matrixDefinition} Matrix</Typography>
             <PortfolioSelect portfolio={portfolio} setPortfolio={setPortfolio} />
-            <button onClick={submitPortfolio}>Submit</button>
-            <div className="ag-theme-alpine-dark" style={{ width: WIDTH, height: HEIGHT }}>
-                <AgGridReact
-                    ref={gridRef}
-                    rowData={rowData}
-                    columnDefs={columnDefs}
-                    noRowsOverlayComponent={Loader}
-                />
-            </div>
-        </div>
+            <Button onClick={submitPortfolio}>Submit</Button>
+            <MatrixTable rows={rowData} columns={columnDefs} />
+        </Paper>
     )
 }
