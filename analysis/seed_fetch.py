@@ -11,6 +11,13 @@ end_date = datetime.datetime(2022, 1, 1)
 # expetec observation count
 expected = 1763
 
+# TODO data-seed path
+if not os.path.exists('./src/data-seed'):
+    """
+    This directory is .gitignored, just make it on the 1st seed
+    """
+    os.makedirs('./src/data-seed')
+
 class NotEnoughObservations(Exception):
     pass
 
