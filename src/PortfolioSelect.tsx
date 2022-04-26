@@ -56,29 +56,27 @@ export const PortfolioSelect: React.FC<PortfolioSelectProps> = ({ portfolio, set
     })
 
     return (
-        <div>
-            <FormControl sx={{ m: 1, width: 300 }}>
-                <InputLabel id="demo-multiple-name-label">Name</InputLabel>
-                <Select
-                    labelId="demo-multiple-name-label"
-                    id="demo-multiple-name"
-                    multiple
-                    value={portfolio}
-                    onChange={handleChange}
-                    input={<OutlinedInput label="Name" />}
-                    MenuProps={MenuProps}
-                >
-                    {symbols.map((symbol) => (
-                        <MenuItem
-                            key={symbol}
-                            value={symbol}
-                            style={getStyles(symbol, portfolio, theme)}
-                        >
-                            {symbol}
-                        </MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
-        </div>
+        <FormControl sx={{ m: 1, width: 300 }}>
+            <InputLabel id="demo-multiple-name-label">Portfolio</InputLabel>
+            <Select
+                labelId="demo-multiple-name-label"
+                id="demo-multiple-name"
+                multiple
+                value={portfolio}
+                onChange={handleChange}
+                input={<OutlinedInput label="Name" />}
+                MenuProps={MenuProps}
+            >
+                {symbols.map((symbol) => (
+                    <MenuItem
+                        key={symbol}
+                        value={symbol}
+                        style={getStyles(symbol, portfolio, theme)}
+                    >
+                        {symbol}
+                    </MenuItem>
+                ))}
+            </Select>
+        </FormControl>
     );
 }
