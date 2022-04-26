@@ -10,6 +10,7 @@ type RecordCountArray = [string,number][]
 function App() {
   const [symbols] = React.useState<string[]>(Object.keys(allRecords))
   const [recordCount, setRecordCount] = React.useState<RecordCountArray>([])
+  const [portfolio, setPortfolio] = React.useState<string[]>([]);
 
   const init = React.useCallback(async () => {
     const newRecordCounts: RecordCountArray = []
@@ -31,7 +32,7 @@ function App() {
       <h1>Records</h1>
       <div>{JSON.stringify(recordCount)}</div>
       <Nav />
-      <PortfolioSelect />
+      <PortfolioSelect portfolio={portfolio} setPortfolio={setPortfolio} />
     </div>
   );
 }

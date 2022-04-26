@@ -18,6 +18,7 @@ self.onmessage = async (event) => {
   await pyodideReadyPromise;
   // Don't bother yet with this line, suppose our API is built in such a way:
   const { python, ...context } = event.data;
+  console.log('CONTEzT', context)
   const allRecords = await db.stockObservation.toArray();
   // @ts-ignore
   self['allRecords'] = allRecords;

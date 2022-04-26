@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 # allRecords: records to translate from Worker space to DataFrame
 # matrixDefinition: which matrix to return, Correlation or Covariance
-from js import allRecords, matrixDefinition 
+from js import allRecords, matrixDefinition, portfolio 
 
 def read_price_data(stock_symbol):
     """
@@ -44,7 +44,8 @@ def generate_return_series(prices):
     return returns
 
 """Set input"""
-symbol_list = ["AAPL", "AMZN", "FB", "GOOG", "MSFT"] #,"CAT", "NKE", "DAL","XOM"
+# symbol_list = ["AAPL", "AMZN", "FB", "GOOG", "MSFT"] #,"CAT", "NKE", "DAL","XOM"
+symbol_list = list(map(lambda x: x.upper(), portfolio))
 
 num_stocks= len(symbol_list)
 stock_weights = {stock_symbol:1/num_stocks for stock_symbol in symbol_list} # Set stock weights

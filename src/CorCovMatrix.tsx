@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
 import PyodideWorker from "./Pyodide.worker";
 import { correlationMatrix as correlationMatrixPython } from "./python-scripts/correlation-matrix";
+import { PortfolioSelect } from "./PortfolioSelect";
 const worker = new PyodideWorker();
 
 export enum MatrixDefinition {
@@ -9,10 +10,11 @@ export enum MatrixDefinition {
     Covariance = 'Covariance'
 }
 
-const sendRunMessage = async (matrixDefinition: MatrixDefinition) => {
+const sendRunMessage = async (matrixDefinition: MatrixDefinition, portfolio: string[]) => {
     worker.postMessage({
         matrixDefinition,
         python: correlationMatrixPython,
+        portfolio,
     })
 };
 
@@ -34,6 +36,7 @@ export const CorCovMatrix: React.FC<{ matrixDefinition: MatrixDefinition }> = ({
     const gridRef = useRef<AgGridReact>(null);
     const [rowData, setRowData] = useState<ICorrelationMatrixRow[]>([]);
     const [columnDefs, setColumnDefs] = useState<{ field: string }[]>([]);
+    const [portfolio, setPortfolio] = React.useState<string[]>([]);
 
     // TODO this any
     const onWorkerMessage = useCallback((event: any) => {
@@ -51,7 +54,7 @@ export const CorCovMatrix: React.FC<{ matrixDefinition: MatrixDefinition }> = ({
 
         setRowData(newRowData as unknown as ICorrelationMatrixRow[]);
         setColumnDefs(symbolArray.map(field => ({ field })));
-    },[setRowData])
+    }, [setRowData])
 
     useEffect(() => {
         if (gridRef.current && gridRef.current.api) {
@@ -63,17 +66,23 @@ export const CorCovMatrix: React.FC<{ matrixDefinition: MatrixDefinition }> = ({
         worker.onmessage = onWorkerMessage;
 
         return worker.removeEventListener('message', onWorkerMessage);
-    },[onWorkerMessage])
+    }, [onWorkerMessage])
 
-    useEffect(() => {
-        sendRunMessage(matrixDefinition);
-    },[matrixDefinition])
+    // useEffect(() => {
+    //     sendRunMessage(matrixDefinition);
+    // }, [matrixDefinition])
+
+    const submitPortfolio = useCallback(() => {
+        sendRunMessage(matrixDefinition, portfolio)
+    }, [matrixDefinition, portfolio]);
 
 
-    return(
+    return (
         <div>
             <h1>{matrixDefinition} Matrix</h1>
-            <div className="ag-theme-alpine-dark" style={{width: WIDTH, height: HEIGHT}}>
+            <PortfolioSelect portfolio={portfolio} setPortfolio={setPortfolio} />
+            <button onClick={submitPortfolio}>Submit</button>
+            <div className="ag-theme-alpine-dark" style={{ width: WIDTH, height: HEIGHT }}>
                 <AgGridReact
                     ref={gridRef}
                     rowData={rowData}
