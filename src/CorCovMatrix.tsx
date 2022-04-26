@@ -1,9 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
-import { db } from "./db";
 import PyodideWorker from "./Pyodide.worker";
 import { correlationMatrix as correlationMatrixPython } from "./python-scripts/correlation-matrix";
-import styled from 'styled-components';
 const worker = new PyodideWorker();
 
 export enum MatrixDefinition {
@@ -12,11 +10,7 @@ export enum MatrixDefinition {
 }
 
 const sendRunMessage = async (matrixDefinition: MatrixDefinition) => {
-    const allRecords = await db.stockObservation.toArray();
-
     worker.postMessage({
-        id: Math.floor(Math.random() * 100000), // TODO do i need this?
-        allRecords,
         matrixDefinition,
         python: correlationMatrixPython,
     })
@@ -34,12 +28,7 @@ interface ICorrelationMatrixRow {
     MSFT: number;
 }
 
-const MatrixWrapper = styled.div`
-`
-
-const MatrixHeadline = styled.h1`
-    margin: 0;
-`
+const Loader = () => <span>Hello World</span>
 
 export const CorCovMatrix: React.FC<{ matrixDefinition: MatrixDefinition }> = ({ matrixDefinition }) => {
     const gridRef = useRef<AgGridReact>(null);
@@ -48,9 +37,8 @@ export const CorCovMatrix: React.FC<{ matrixDefinition: MatrixDefinition }> = ({
 
     // TODO this any
     const onWorkerMessage = useCallback((event: any) => {
-        const { id, ...data } = event.data;
-        console.log(event.data)
-        const [symbolArray, rowsArray]: [string[], number[][]] = JSON.parse(data.results);
+        const { results } = event.data;
+        const [symbolArray, rowsArray]: [string[], number[][]] = JSON.parse(results);
 
         const newRowData = rowsArray.map((valueArr: number[]) => {
             const result: Record<string, unknown> = {};
@@ -83,15 +71,16 @@ export const CorCovMatrix: React.FC<{ matrixDefinition: MatrixDefinition }> = ({
 
 
     return(
-        <MatrixWrapper>
-            <MatrixHeadline>{matrixDefinition} Matrix</MatrixHeadline>
+        <div>
+            <h1>{matrixDefinition} Matrix</h1>
             <div className="ag-theme-alpine-dark" style={{width: WIDTH, height: HEIGHT}}>
                 <AgGridReact
                     ref={gridRef}
                     rowData={rowData}
                     columnDefs={columnDefs}
+                    noRowsOverlayComponent={Loader}
                 />
             </div>
-        </MatrixWrapper>
+        </div>
     )
 }

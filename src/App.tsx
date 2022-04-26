@@ -3,6 +3,7 @@ import './App.css';
 import { db } from './db';
 import { Nav } from './Nav';
 import * as allRecords from './data-seed'
+import { PortfolioSelect } from './PortfolioSelect';
 
 type RecordCountArray = [string,number][]
 
@@ -30,6 +31,7 @@ function App() {
       <h1>Records</h1>
       <div>{JSON.stringify(recordCount)}</div>
       <Nav />
+      <PortfolioSelect />
     </div>
   );
 }

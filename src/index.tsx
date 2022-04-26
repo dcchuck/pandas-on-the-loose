@@ -6,6 +6,10 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { CorCovMatrix, MatrixDefinition } from './CorCovMatrix';
 import Seeder from './Seeder';
 import './index.css';
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
 import 'ag-grid-community/dist/styles/ag-grid.css'; // Core grid CSS, always needed
 import 'ag-grid-community/dist/styles/ag-theme-alpine-dark.css'; // Optional theme CSS
 import { PortfoioVsSp } from './PortfolioVsSp';

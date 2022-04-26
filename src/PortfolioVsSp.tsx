@@ -1,8 +1,7 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { db } from "./db";
 import PyodideWorker from "./Pyodide.worker";
 import { portfolioVsSp500 as portfolioVsSp500Python } from "./python-scripts/portfolio-vs-sp500";
-import styled from 'styled-components';
 const worker = new PyodideWorker();
 
 export enum MatrixDefinition {
@@ -25,10 +24,10 @@ export const PortfoioVsSp: React.FC = () => {
 
     // TODO this any
     const onWorkerMessage = useCallback((event: any) => {
-        const { id, ...data } = event.data;
+        const { results } = event.data;
         console.log('got data!')
         console.log(event.data)
-        setResult(JSON.stringify(event.data))
+        setResult(results)
     },[])
 
     useEffect(() => {
