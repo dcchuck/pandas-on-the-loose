@@ -30,8 +30,10 @@ function getStyles(name: string, personName: string[], theme: Theme) {
 interface PortfolioSelectProps {
     portfolio: string[];
     setPortfolio: React.Dispatch<React.SetStateAction<string[]>>;
+    disabled: boolean;
 }
-export const PortfolioSelect: React.FC<PortfolioSelectProps> = ({ portfolio, setPortfolio }) => {
+
+export const PortfolioSelect: React.FC<PortfolioSelectProps> = ({ disabled, portfolio, setPortfolio }) => {
     const theme = useTheme();
     const [symbols, setSymbols] = useState<string[]>([])
 
@@ -66,6 +68,7 @@ export const PortfolioSelect: React.FC<PortfolioSelectProps> = ({ portfolio, set
                 onChange={handleChange}
                 input={<OutlinedInput label="Name" />}
                 MenuProps={MenuProps}
+                disabled={disabled}
             >
                 {symbols.map((symbol) => (
                     <MenuItem

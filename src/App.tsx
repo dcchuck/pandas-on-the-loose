@@ -32,7 +32,7 @@ function App() {
       <h1>Records</h1>
       <div>{JSON.stringify(recordCount)}</div>
       <Nav />
-      <PortfolioSelect portfolio={portfolio} setPortfolio={setPortfolio} />
+      <PortfolioSelect portfolio={portfolio} setPortfolio={setPortfolio} disabled={false} />
     </div>
   );
 }

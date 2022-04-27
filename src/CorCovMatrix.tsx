@@ -35,9 +35,10 @@ interface MatrixTableProps {
   columns: string[];
 }
 
-const LoadingPlaceholder = () => {
+// TODO move me
+export const LoadingPlaceholder = () => {
   return (
-    <Paper sx={{ height: 400, width: "100%", display: 'flex', justifyContent: 'space-evenly', flexDirection: 'column', alignItems: 'center' }}>
+    <Paper sx={{ height: 250, width: "100%", display: 'flex', justifyContent: 'space-evenly', flexDirection: 'column', alignItems: 'center' }}>
       <Box component="div" sx={{ backgroundColor: 'white', display: 'flex', width: 100 }}>
         <LoadingPanda />
       </Box>
@@ -119,7 +120,7 @@ export const CorCovMatrix: React.FC<{ matrixDefinition: MatrixDefinition }> = ({
           <Typography variant="h5" sx={{ marginLeft: 3 }}>{matrixDefinition} Matrix</Typography>
         </Grid>
         <Grid item xs={5}>
-          <PortfolioSelect portfolio={portfolio} setPortfolio={setPortfolio} />
+          <PortfolioSelect disabled={loading} portfolio={portfolio} setPortfolio={setPortfolio} />
         </Grid>
         <Grid item xs={2}>
           <Button onClick={onButtonClick} size="large" disabled={loading}>Submit</Button>
