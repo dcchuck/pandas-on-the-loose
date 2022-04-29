@@ -1,5 +1,7 @@
 # Pandas on the loose!
 
+This is code for a talk I gave at [Fin JS New York](https://finjs.com/) 2022
+
 ## Seeding the Data
 
 The typescript will not compile without it
