@@ -105,7 +105,7 @@ export const CorCovMatrix: React.FC<{ matrixDefinition: MatrixDefinition }> = ({
     if (loading) {
       submitPortfolio()
     }
-  }, [loading])
+  }, [loading, submitPortfolio])
 
   const onButtonClick = () => setLoading(true)
 
