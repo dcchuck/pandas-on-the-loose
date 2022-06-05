@@ -10,10 +10,9 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { Typography } from "@mui/material";
-import { LoadingPanda } from './LoadingPanda';
+import { LoadingPlaceholder } from "./LoadingPlaceholder";
 
 const worker = new PyodideWorker();
 
@@ -33,18 +32,6 @@ const sendRunMessage = async (matrixDefinition: MatrixDefinition, portfolio: str
 interface MatrixTableProps {
   rows: number[][];
   columns: string[];
-}
-
-// TODO move me
-export const LoadingPlaceholder = () => {
-  return (
-    <Paper sx={{ height: 250, width: "100%", display: 'flex', justifyContent: 'space-evenly', flexDirection: 'column', alignItems: 'center' }}>
-      <Box component="div" sx={{ backgroundColor: 'white', display: 'flex', width: 100 }}>
-        <LoadingPanda />
-      </Box>
-      <Typography variant="h6" sx={{ display: 'flex' }}>Loading...</Typography>
-    </Paper>
-  )
 }
 
 const MatrixTable: React.FC<MatrixTableProps> = ({ rows, columns }) => {
