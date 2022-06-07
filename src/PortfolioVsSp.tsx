@@ -7,7 +7,7 @@ import { portfolioVsSp500 as portfolioVsSp500Python } from "./python-scripts/por
 import { PortfolioSelect } from "./PortfolioSelect";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
-import { LoadingPlaceholder } from "./CorCovMatrix";
+import { LoadingPlaceholder } from "./LoadingPlaceholder";
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
