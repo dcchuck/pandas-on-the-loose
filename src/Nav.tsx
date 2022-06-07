@@ -12,4 +12,6 @@ export const Nav = () =>
         <Link to="/portfolio-vs-sp">Portfolio vs SP</Link>
         <div />
         <Link to="/seeder">Seeder</Link>
+        <div />
+        <Link to="/basic-example">Basic Example</Link>
     </div>

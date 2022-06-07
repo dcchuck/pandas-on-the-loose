@@ -2,7 +2,6 @@ import { db } from './db';
 declare const self: DedicatedWorkerGlobalScope;
 export default {} as typeof Worker & { new (): Worker };
 
-
 // TODO - import from a locally running CDN
 importScripts("https://cdn.jsdelivr.net/pyodide/v0.20.0/full/pyodide.js");
 
@@ -18,7 +17,7 @@ self.onmessage = async (event) => {
   await pyodideReadyPromise;
   // Don't bother yet with this line, suppose our API is built in such a way:
   const { python, ...context } = event.data;
-  console.log('CONTEzT', context)
+
   const allRecords = await db.stockObservation.toArray();
   // @ts-ignore
   self['allRecords'] = allRecords;
@@ -27,7 +26,7 @@ self.onmessage = async (event) => {
     // @ts-ignore
     self[key] = context[key];
   }
-  // Now is the easy part, the one that is similar to working in the main thread:
+
   try {
     // @ts-ignore
     await self.pyodide.loadPackagesFromImports(python);

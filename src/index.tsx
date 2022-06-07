@@ -13,6 +13,7 @@ import '@fontsource/roboto/700.css';
 import { PortfoioVsSp } from './PortfolioVsSp';
 import { ThemeProvider } from '@mui/material/styles';
 import { theme } from './theme';
+import { BasicExample } from './BasicExample';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -28,6 +29,7 @@ root.render(
           <Route path="/covariance-matrix" element={<CorCovMatrix matrixDefinition={MatrixDefinition.Covariance} />} />
           <Route path="/portfolio-vs-sp" element={<PortfoioVsSp />} />
           <Route path="/seeder" element={<Seeder />} />
+          <Route path="/basic-example" element={<BasicExample />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
